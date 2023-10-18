@@ -1,0 +1,21 @@
+# .NET Core
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.vscode
+*.vs
+*.suo
+*.cache
+*.log
+*.vspscc
+*.vssscc
+*.dotCover
+.coverage
+*.csproj.user
+*.publishsettings
+node_modules/
+bower_components/
+.env
