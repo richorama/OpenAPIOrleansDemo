@@ -37,7 +37,14 @@ public sealed class ChatGrain : Grain, IChatGrain
             }
             else if (responseMessage.FunctionCall?.Name == "remove_todo")
             {
-                responseMessage.Content = RemoveTodo(responseMessage.FunctionCall.Arguments);
+                try
+                {
+                    responseMessage.Content = RemoveTodo(responseMessage.FunctionCall.Arguments);
+                }
+                catch (Exception e)
+                {
+                    responseMessage.Content = e.Message;
+                }
             }
             else
             {
