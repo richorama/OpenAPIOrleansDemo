@@ -18,23 +18,6 @@ public sealed class ChatGrain : Grain, IChatGrain
         _client = client;
     }
 
-    private string AddTodo(string serialisedArguments)
-    {
-        var arguments = JsonConvert.DeserializeObject<AddTodoParameters>(serialisedArguments);
-        Console.WriteLine($"add_todo('{arguments?.description}')");
-        _todos.Add(arguments?.description ?? "");
-        return $"Added todo item: {arguments?.description}";
-    }
-
-    private string RemoveTodo(string serialisedArguments)
-    {
-        var arguments = JsonConvert.DeserializeObject<RemoveTodoParameters>(serialisedArguments);
-        Console.WriteLine($"remove_todo({arguments?.index})");
-        _todos.RemoveAt(arguments?.index ?? 0);
-        return $"Removed todo at index {arguments?.index}";
-    }
-
-
     public async Task<string> Chat(string input)
     {
         _messages.Add(new ChatMessage()
@@ -108,6 +91,22 @@ You are very encouraging and enthusiastic about getting things done. These are t
 
         var response = await _client.GetChatCompletionsAsync("gpt4", options);
         return response.Value.Choices[0].Message;
+    }
+
+    private string AddTodo(string serialisedArguments)
+    {
+        var arguments = JsonConvert.DeserializeObject<AddTodoParameters>(serialisedArguments);
+        Console.WriteLine($"add_todo('{arguments?.description}')");
+        _todos.Add(arguments?.description ?? "");
+        return $"Added todo item: {arguments?.description}";
+    }
+
+    private string RemoveTodo(string serialisedArguments)
+    {
+        var arguments = JsonConvert.DeserializeObject<RemoveTodoParameters>(serialisedArguments);
+        Console.WriteLine($"remove_todo({arguments?.index})");
+        _todos.RemoveAt(arguments?.index ?? 0);
+        return $"Removed todo at index {arguments?.index}";
     }
 
     public Task<string[]> GetTodos() => Task.FromResult(_todos.ToArray());
