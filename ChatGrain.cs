@@ -37,14 +37,7 @@ public sealed class ChatGrain : Grain, IChatGrain
             }
             else if (responseMessage.FunctionCall?.Name == "remove_todo")
             {
-                try
-                {
-                    responseMessage.Content = RemoveTodo(responseMessage.FunctionCall.Arguments);
-                }
-                catch (Exception e)
-                {
-                    responseMessage.Content = e.Message;
-                }
+                responseMessage.Content = RemoveTodo(responseMessage.FunctionCall.Arguments);
             }
             else
             {
@@ -110,10 +103,17 @@ You are very encouraging and enthusiastic about getting things done. These are t
 
     private string RemoveTodo(string serialisedArguments)
     {
-        var arguments = JsonConvert.DeserializeObject<RemoveTodoParameters>(serialisedArguments);
-        Console.WriteLine($"remove_todo({arguments?.index})");
-        _todos.RemoveAt(arguments?.index ?? 0);
-        return $"Removed todo at index {arguments?.index}";
+        try
+        {
+            var arguments = JsonConvert.DeserializeObject<RemoveTodoParameters>(serialisedArguments);
+            Console.WriteLine($"remove_todo({arguments?.index})");
+            _todos.RemoveAt(arguments?.index ?? 0);
+            return $"Removed todo at index {arguments?.index}";
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
     }
 
     public Task<string[]> GetTodos() => Task.FromResult(_todos.ToArray());
