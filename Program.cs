@@ -26,7 +26,13 @@ using WebApplication app = builder.Build();
 app.MapGet("/", async (HttpRequest request, IGrainFactory grains) =>
     {
         var grain = grains.GetGrain<IChatGrain>("_");
-        return await grain.GetTodos();
+
+        if (request.Query.ContainsKey("q"))
+        {
+            return await grain.Chat(request.Query["q"].FirstOrDefault() ?? "");
+        }
+
+        return string.Join("\n", await grain.GetTodos());
     });
 
 app.MapPost("/",
